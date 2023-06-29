@@ -7,11 +7,18 @@ from modules import my_json_library
 from openpyxl import load_workbook, Workbook
 from openpyxl.styles import Font, Color, Fill, PatternFill
 from modules.my_json_library import get_data_from_json_file, write_data_into_json_file
+from modules.operating_system import detect_os, System
 
 # tähän on laitettava polku käytettyyn tiedostoon, kuten se on koneella, jolla ohjelmaa suoritetaan
-# my_wb = "C:\\Users\\artzi\\OneDrive\\Desktop\\Tarratesti.xlsx"  # työstettävän Excel-taulukon polku
-my_wb = "/home/artzi/Desktop/Tarratesti.xlsx"                    # edellinen sama Linuxissa
-my_new_wb = "/home/artzi/Desktop/Tarratesti2.xlsx"
+if detect_os() == System.Windows:
+    # Windows polut
+    my_wb = "C:\\Users\\artzi\\OneDrive\\Desktop\\Tarratesti.xlsx"
+    my_new_wb = "C:\\Users\\artzi\\OneDrive\\Desktop\\Tarratesti2.xlsx"
+else:
+    # Linux polut
+    my_wb = "/home/artzi/Desktop/Tarratesti.xlsx"
+    my_new_wb = "/home/artzi/Desktop/Tarratesti2.xlsx"
+
 json_file = "res/harjoitustiedot.json"                         # Uusi nimi tälle, kun oikeita tietoja käsitellään
 
 keep_titels = False
@@ -524,15 +531,14 @@ def write_excel_file(excel_file_name):
     workbook = write_excel_sheet(workbook, missing_phone, json_phone_missing_file)
     workbook = write_excel_sheet(workbook, check_alternatives, json_problems_file)
     workbook = write_excel_sheet(workbook, check_manually, json_problems_file2)
-
     workbook.save(excel_file_name)
     workbook.close()
 
 
 # Kirjoitetaan dataa excelin taulukoihin
-def write_excel_sheet(workbook_object, excel_sheet_name, json_file):
+def write_excel_sheet(workbook_object, excel_sheet_name, jsonfile):
     json_data = []
-    headers, values_list = get_data_from_json_file(json_file)
+    headers, values_list = get_data_from_json_file(jsonfile)
 
     header_style_settings = PatternFill('solid', fgColor='FFFF00')
     header_font_settings = Font(bold=True, size=16, color='0000FF')
@@ -573,10 +579,10 @@ def create_modified_headers_for_labels(data):
 
 
 def run_this():
-    # # Seuraavien 2 rivin aktivointi hakee "alkuperäiset" tiedot Excelistä
-    # sheet_names, wb = get_excel_workbooks(my_wb)
-    # my_json_library.dump_data_into_json_file(my_wb, sheet_names[0], json_file)
-    #
+    # Seuraavien 2 rivin aktivointi hakee "alkuperäiset" tiedot Excelistä
+    sheet_names, wb = get_excel_workbooks(my_wb)
+    my_json_library.dump_data_into_json_file(my_wb, sheet_names[0], json_file)
+
     # Varmuuskopioidusta Excelistä, joka on nyt muutettu JSON-tiedostoksi, haetaan tietoja koneluettavaksi
     my_json_library.get_data_from_json_file(json_file)
     set_values_into_arrays(json_file)

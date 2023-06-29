@@ -61,14 +61,20 @@ Lisäksi suosittelen .md-tiedostojen käsittelyyn "Obsidian"-ohjelmaa (https://o
 - https://www.addictivetips.com/windows-tips/fix-running-scripts-is-disabled-on-this-system-powershell-on-windows-10/
 - https://stackoverflow.com/questions/46896093/how-to-activate-virtual-environment-from-windows-10-command-prompt
 - https://python.land/virtual-environments/virtualenv
+- https://docs.python.org/3/library/venv.html
 - https://www.datacamp.com/tutorial/python-excel-tutorial
 - https://stackoverflow.com/questions/60044233/converting-excel-into-json-using-python
 - https://automatetheboringstuff.com/chapter12/
 - https://openpyxl.readthedocs.io/en/latest/
+- https://www.linode.com/docs/guides/how-to-use-python-markdown-to-convert-markdown-to-html/
 
 ### Todettuja ongelmia
 - Moduuli "xlrd" ei toimi uusien Exceltaulukoiden kanssa, sillä se ei tue formaattia .xlsx, vaan vain vanhempaa .xls -formaattia.
 - Edellä mainitusta syystä onkin käytettävä isoa "pandas"-moduulia, mutta se ei ole kevyt ohjelman kannalta. Siksi käytän openpyxl-moduulia, vaikka se ei annakaan valmiita työkaluja tietojen edelleen käsittelyyn.
+- Windows PowerShell edellyttää "execution policy"n määrittämistä.
+  - Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+  - Set-ExecutionPolicy RemoteSigned -Scope LocalMachine
+
 
 ### Tekniikoita tutkittavaksi myöhemmin
 - jsonpickle (https://pypi.org/project/jsonpickle/)
