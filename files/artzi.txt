@@ -1,0 +1,8 @@
+[Windows]
+C:\Users\artzi\OneDrive\Desktop\Tarratesti.xlsx
+C:\Users\artzi\OneDrive\Desktop\Tarratesti2.xlsx
+[Linux]
+/home/artzi/Desktop/Tarratesti.xlsx
+/home/artzi/Desktop/Tarratesti2.xlsx
+[json]
+res/harjoitustiedot.json
