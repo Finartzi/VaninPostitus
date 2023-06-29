@@ -1,0 +1,5 @@
+[Windows]
+C:\Users\toimisto\Desktop\Tarratulostus\Tarratesti.xlsx
+C:\Users\toimisto\Desktop\Tarratulostus\Tarratesti2.xlsx
+[json]
+files/alkuperäiset_tiedot.json

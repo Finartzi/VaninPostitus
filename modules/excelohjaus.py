@@ -7,20 +7,9 @@ from modules import my_json_library
 from openpyxl import load_workbook, Workbook
 from openpyxl.styles import Font, Color, Fill, PatternFill
 from modules.my_json_library import get_data_from_json_file, write_data_into_json_file
-from modules.operating_system import detect_os, System
+from modules.operating_system import set_globals
 
-# tähän on laitettava polku käytettyyn tiedostoon, kuten se on koneella, jolla ohjelmaa suoritetaan
-if detect_os() == System.Windows:
-    # Windows polut
-    my_wb = "C:\\Users\\artzi\\OneDrive\\Desktop\\Tarratesti.xlsx"
-    my_new_wb = "C:\\Users\\artzi\\OneDrive\\Desktop\\Tarratesti2.xlsx"
-else:
-    # Linux polut
-    my_wb = "/home/artzi/Desktop/Tarratesti.xlsx"
-    my_new_wb = "/home/artzi/Desktop/Tarratesti2.xlsx"
-
-json_file = "res/harjoitustiedot.json"                         # Uusi nimi tälle, kun oikeita tietoja käsitellään
-
+# label print options
 keep_titels = False
 keep_countries = False
 
@@ -268,10 +257,10 @@ def sort_out_more_than_three(keep):
 
 
 # find multiple posting addresses
-def find_multiples():
+def find_multiples(json_file):
 
     # make .json-file for working manually entries
-    def create_file_to_manually_workout(inx_list, file_name):
+    def create_file_to_manually_workout(inx_list, file_name, json_file):
         set_values_into_arrays(json_file)
         tmp = []
         for i in range(0, len(addresses)-1):
@@ -320,7 +309,7 @@ def find_multiples():
 
     doubles, keeper = find_doubles_and_more()
     problem_indexes = sort_out_more_than_three(keeper)
-    create_file_to_manually_workout(problem_indexes, json_problems_file2)
+    create_file_to_manually_workout(problem_indexes, json_problems_file2, json_file)
     doubles_list, doubles_tuples = find_tuples_to_remove(problem_indexes, keeper, list(doubles))
 
     return doubles_list, doubles_tuples, problem_indexes
@@ -484,13 +473,13 @@ def all_labels(singles, doubles, triples):
 
 
 # Here is where the magic happens!
-def sort_postal_addresses(file_name):
+def sort_postal_addresses(file_name, json_file):
     # clear old Arrays
     clear_arrays()
     # get posting data-Arrays
     set_values_into_arrays(file_name, True)
     # holder keeps two values pointing Array-indexes containing similar address
-    doubles_and_triples, holder, problem_indexes = find_multiples()
+    doubles_and_triples, holder, problem_indexes = find_multiples(json_file)
     # find single posting addresses
     # problem_indexes = sort_out_more_than_three(doubles_and_triples)
     singles = find_singles(addresses, doubles_and_triples, problem_indexes, file_name)
@@ -579,10 +568,10 @@ def create_modified_headers_for_labels(data):
 
 
 def run_this():
-    # Seuraavien 2 rivin aktivointi hakee "alkuperäiset" tiedot Excelistä
+    my_wb, my_new_wb, json_file = set_globals()
+    # Hae "alkuperäiset" tiedot Excelistä
     sheet_names, wb = get_excel_workbooks(my_wb)
     my_json_library.dump_data_into_json_file(my_wb, sheet_names[0], json_file)
-
     # Varmuuskopioidusta Excelistä, joka on nyt muutettu JSON-tiedostoksi, haetaan tietoja koneluettavaksi
     my_json_library.get_data_from_json_file(json_file)
     set_values_into_arrays(json_file)
@@ -591,7 +580,7 @@ def run_this():
     # Luodaan sekä sähköposteille että postituslistalle omat JSON-tiedostot (myös vikailmoitukset)
     make_posting_json_files(valid_json_set)
     # Lajitellaan postitukset
-    labels = sort_postal_addresses(json_mail_file)
+    labels = sort_postal_addresses(json_mail_file, json_file)
     info(labels, valid_json_set)
     # vie valmiit etikettitiedot JSON-tiedostoon
     my_json_library.write_data_into_json_file(json_final_mail_file, create_modified_headers_for_labels(labels))
