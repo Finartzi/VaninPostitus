@@ -66,12 +66,16 @@ def get_data_from_json_file(json_file):
         with open(json_file) as json_file:
             data = json.load(json_file)
 
-        # hae otsikot
-        headers = list(data[0].keys())
+        if data != []:
+            # hae otsikot
+            headers = list(data[0].keys())
 
-        # hae tiedot
-        for value in data:
-            values_list.append(value.values())
+            # hae tiedot
+            for value in data:
+                values_list.append(value.values())
+        else:
+            headers = ['Tyhjä']
+            values_list = ['Ei mitään tulostettavaa']
 
         return headers, values_list
     except FileNotFoundError:
