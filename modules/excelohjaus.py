@@ -6,7 +6,7 @@
 from modules import my_json_library
 from openpyxl import load_workbook, Workbook
 from openpyxl.styles import Font, Color, Fill, PatternFill
-from modules.my_json_library import get_data_from_json_file, write_data_into_json_file
+from modules.my_json_library import get_data_from_json_file, write_data_into_json_file, dump_data_into_json_file
 from modules.operating_system import set_globals
 
 # label print options
@@ -176,17 +176,17 @@ def make_posting_json_files(json_set):
         return posting, problems
 
     missing_phones = separate_missing_phones(json_set)
-    my_json_library.write_data_into_json_file(json_phone_missing_file, missing_phones)
+    write_data_into_json_file(json_phone_missing_file, missing_phones)
 
     missing_emails = separate_missing_emails(json_set)
-    my_json_library.write_data_into_json_file(json_email_missing_file, missing_emails)
+    write_data_into_json_file(json_email_missing_file, missing_emails)
 
     enlisted_emails = enlist_emails(json_set, SELECTION_EMAILS_)
-    my_json_library.write_data_into_json_file(json_email_file, enlisted_emails)
+    write_data_into_json_file(json_email_file, enlisted_emails)
 
     enlisted_post, manual_check = enlist_posts(json_set, SELECTION_EMAILS_)
-    my_json_library.write_data_into_json_file(json_mail_file, enlisted_post)
-    my_json_library.write_data_into_json_file(json_problems_file, manual_check)
+    write_data_into_json_file(json_mail_file, enlisted_post)
+    write_data_into_json_file(json_problems_file, manual_check)
     return True
 
 
@@ -567,25 +567,29 @@ def create_modified_headers_for_labels(data):
     return obj
 
 
-def run_this():
-    my_wb, my_new_wb, json_file = set_globals()
-    # Hae "alkuperäiset" tiedot Excelistä
-    sheet_names, wb = get_excel_workbooks(my_wb)
-    my_json_library.dump_data_into_json_file(my_wb, sheet_names[0], json_file)
-    # Varmuuskopioidusta Excelistä, joka on nyt muutettu JSON-tiedostoksi, haetaan tietoja koneluettavaksi
-    my_json_library.get_data_from_json_file(json_file)
-    set_values_into_arrays(json_file)
+def run_also_this(mynew_wb, jsonfile):
+    set_values_into_arrays(jsonfile)
     # Luodaan JSON-tyyppistä dataa koneen muistiin
     valid_json_set = combine_key_value_pairs()
     # Luodaan sekä sähköposteille että postituslistalle omat JSON-tiedostot (myös vikailmoitukset)
     make_posting_json_files(valid_json_set)
     # Lajitellaan postitukset
-    labels = sort_postal_addresses(json_mail_file, json_file)
+    labels = sort_postal_addresses(json_mail_file, jsonfile)
     info(labels, valid_json_set)
     # vie valmiit etikettitiedot JSON-tiedostoon
-    my_json_library.write_data_into_json_file(json_final_mail_file, create_modified_headers_for_labels(labels))
+    write_data_into_json_file(json_final_mail_file, create_modified_headers_for_labels(labels))
     # luodaan uusia excel-taulukoita
-    write_excel_file(my_new_wb)
+    write_excel_file(mynew_wb)
+
+def run_this():
+    my_wb, my_new_wb, json_file = set_globals()
+    # Hae "alkuperäiset" tiedot Excelistä
+    sheet_names, _ = get_excel_workbooks(my_wb)
+    dump_data_into_json_file(my_wb, sheet_names[0], json_file)
+    # Varmuuskopioidusta Excelistä, joka on nyt muutettu JSON-tiedostoksi, haetaan tietoja koneluettavaksi
+    get_data_from_json_file(json_file)
+
+    run_also_this(my_new_wb, json_file)
 
     print(" --- ")
     print("Valmis")

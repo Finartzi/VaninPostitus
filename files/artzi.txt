@@ -2,7 +2,7 @@
 C:\Users\artzi\OneDrive\Desktop\Tarratesti.xlsx
 C:\Users\artzi\OneDrive\Desktop\Tarratesti2.xlsx
 [Linux]
-/home/artzi/Desktop/Tarratesti.xlsx
-/home/artzi/Desktop/Tarratesti2.xlsx
+/home/artzi/Desktop/Vantaan_Invalidit_VANIN_ry_jasenyhdistys_jasenet_18.09.2023.xlsx
+/home/artzi/Desktop/Vanin_jasenet2.xlsx
 [json]
-res/harjoitustiedot.json
+res/vanin_jasenet.json
